@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+
+        .messages {
+            list-style: none;
+            padding: 0;
+        }
+
+        .messages li {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .messages .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .messages .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .messages .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        ul.event-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul.event-list li {
+            background-color: #f0f0f0;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Welcome, {{ request.user.username }}!</h1>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <h2>Your Profile</h2>
+    <p>Username: {{ request.user.username }}</p>
+    <p><a href="{% url 'logout' %}">Logout</a></p>
+
+    <h2>CalDAV Configuration</h2>
+    {% if caldav_config %}
+    <p><strong>URL:</strong> {{ caldav_config.caldav_url }}</p>
+    <p><strong>Username:</strong> {{ caldav_config.caldav_username }}</p>
+    <p><a href="{% url 'configure_caldav' %}">Edit CalDAV Configuration</a></p>
+    {% else %}
+    <p>You have not configured your CalDAV calendar yet.</p>
+    <p><a href="{% url 'configure_caldav' %}">Configure CalDAV</a></p>
+    {% endif %}
+
+    <h2>Sheet Name Binding</h2>
+    {% if user_binding and user_binding.sheet_name %}
+    <p>Your name in the sheet: <strong>{{ user_binding.sheet_name }}</strong></p>
+    <p><a href="{% url 'configure_binding' %}">Edit Sheet Name Binding</a></p>
+    {% else %}
+    <p>You have not bound your name from the Google Sheet yet.</p>
+    <p><a href="{% url 'configure_binding' %}">Bind Your Sheet Name</a></p>
+    {% endif %}
+
+    <h2>Your Assigned Events (from Google Sheet)</h2>
+    {% if assigned_events %}
+    <ul class="event-list">
+        {% for event in assigned_events %}
+        <li>
+            <strong>{{ event.title }}</strong><br>
+            {{ event.start_time|date:"Y-m-d H:i" }} - {{ event.end_time|date:"Y-m-d H:i" }}
+            {% if event.description %}<br><small>{{ event.description }}</small>{% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No events are currently assigned to you in the Google Sheet (or your sheet name binding is not set/doesn't
+        match).</p>
+    <p>Ensure you have run `python manage.py poll_sheet` to fetch events from Google Sheets.</p>
+    {% endif %}
+
+</body>
+
+</html>
