@@ -22,7 +22,7 @@ class SheetEvent(models.Model):
     person4_name = models.CharField(max_length=255, blank=True, null=True)
 
 
-# Bind profile to the exact pronunciation in the sheet
+# Bind profile to the exact pronuncudoiation in the sheet
 class UserEventBinding(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     sheet_name = models.CharField(

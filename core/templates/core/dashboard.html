@@ -67,7 +67,14 @@
 
     <h2>Your Profile</h2>
     <p>Username: {{ request.user.username }}</p>
-    <p><a href="{% url 'logout' %}">Logout</a></p>
+    <p>
+    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit"
+            style="background: none; border: none; color: #007bff; cursor: pointer; padding: 0; font-size: inherit; text-decoration: underline;">Logout</button>
+    </form>
+    </p>
+
 
     <h2>CalDAV Configuration</h2>
     {% if caldav_config %}

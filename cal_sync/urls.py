@@ -16,13 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic.base import RedirectView  # For root redirect
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # Provides login, logout, etc.
     path('accounts/', include('django.contrib.auth.urls')),
-    path('', RedirectView.as_view(pattern_name='dashboard',
-         permanent=False)),  # Redirect root to dashboard
-    path('app/', include('core.urls')),  # Your app's URLs
+    path('', RedirectView.as_view(pattern_name='dashboard', permanent=False)),
+    path('app/', include('core.urls')),
 ]
